@@ -12,13 +12,23 @@ Added BlazorStrap *.dll* files to the .nuspec in the **Package** project inside 
 Added **BlazorStrapService.cs** that runs **services.AddBootstrapCss();** as IClientStartup on the Assembly in the **Server** Project.
 
 
-### Configuration
+### Module Configuration
 
 The Module configuration has three parameters:
     **Fade or Slide**: Selects if the slides have a fade transition, or a Slide transition.
     **Has Controls**: Selects if the slides have lateral arrows for sliding.
     **Has Indicator**: Selects if the slides have indicators at the bottom to show the current Slide and Total of Slides.
-    
+
+### Adding Slides
+ >(Recommended) Create a new Folder to store the images
+ 
+ Select the image using the FileManager
+ **Alt**: Image Alt text
+ **Header**: Slide Header Text
+ **Caption**: Slide caption Text
+ **Action Link**: url of the destination for the slide
+ **Action Link Target**: Select between staying on the same window, or opening in new window
+ **Enabled**: If the slide is to be shown or not.
 ### TODO
     - Find a way to not display the Slide Module Title, so far leaving it empty do the trick.
     - Remove the horizontal line above the module.
@@ -38,3 +48,4 @@ MIT
    [BlazorStrap GitHub]: <https://github.com/chanan/BlazorStrap>
    [Oqtane]: <https://www.oqtane.org/>
    [Oqtane GitHub]: <https://github.com/oqtane/oqtane.framework>
+   
