@@ -23,12 +23,18 @@ The Module configuration has three parameters:
  >(Recommended) Create a new Folder to store the images
  
  Select the image using the FileManager
- **Alt**: Image Alt text
- **Header**: Slide Header Text
- **Caption**: Slide caption Text
- **Action Link**: url of the destination for the slide
- **Action Link Target**: Select between staying on the same window, or opening in new window
- **Enabled**: If the slide is to be shown or not.
+ 
+-**Alt**: Image Alt text.
+
+-**Header**: Slide Header Text.
+
+-**Caption**: Slide caption Text.
+
+-**Action Link**: url of the destination for the slide.
+
+-**Action Link Target**: Select between staying on the same window, or opening in new window.
+
+-**Enabled**: If the slide is to be shown or not.
 
 ### TODO
     - Find a way to not display the Slide Module Title, so far leaving it empty do the trick.
