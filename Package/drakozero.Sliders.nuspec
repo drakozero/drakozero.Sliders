@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>drakozero.Sliders</id>
+    <version>1.0.0</version>
+    <authors>drakozero</authors>
+    <owners>drakozero</owners>
+    <title>Sliders</title>
+    <description>Sliders</description>
+    <copyright>drakozero</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/oqtane/oqtane.framework</projectUrl>
+    <iconUrl>https://www.oqtane.org/Portals/0/icon.jpg</iconUrl>
+    <tags>oqtane module</tags>
+    <releaseNotes></releaseNotes>
+    <summary></summary>
+    <dependencies>
+      <dependency id="Oqtane.Framework" version="1.0.1" />
+      <dependency id="BlazorStrap" version="1.3.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Client\bin\Release\netstandard2.1\drakozero.Sliders.Client.Oqtane.dll" target="lib\netstandard2.1" /> 
+    <file src="..\Client\bin\Release\netstandard2.1\BlazorStrap.dll" target="lib\netstandard2.1" /> 
+    <file src="..\Client\bin\Release\netstandard2.1\BlazorComponentUtilities.dll" target="lib\netstandard2.1" /> 
+    <file src="..\Client\bin\Release\netstandard2.1\drakozero.Sliders.Client.Oqtane.pdb" target="lib\netstandard2.1" /> 
+    <file src="..\Server\bin\Release\netcoreapp3.1\drakozero.Sliders.Server.Oqtane.dll" target="lib\netcoreapp3.1" /> 
+    <file src="..\Server\bin\Release\netcoreapp3.1\drakozero.Sliders.Server.Oqtane.pdb" target="lib\netcoreapp3.1" /> 
+    <file src="..\Shared\bin\Release\netstandard2.1\drakozero.Sliders.Shared.Oqtane.dll" target="lib\netstandard2.1" /> 
+    <file src="..\Shared\bin\Release\netstandard2.1\drakozero.Sliders.Shared.Oqtane.pdb" target="lib\netstandard2.1" /> 
+    <file src="..\Server\wwwroot\**\*.*" target="wwwroot" /> 
+  </files>
+</package>

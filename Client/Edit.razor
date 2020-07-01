@@ -1,0 +1,193 @@
+@using Oqtane.Modules.Controls
+@using drakozero.Sliders.Services
+@using drakozero.Sliders.Models
+
+@namespace drakozero.Sliders
+@inherits ModuleBase
+@inject ISliderService SliderService
+@inject NavigationManager NavigationManager
+
+
+
+    <table class="table table-borderless">
+        <tr>
+            <td>
+                <label class="control-label">Name: </label>
+            </td>
+            <td>
+                <input id="_name" class="form-control" @bind="@_name" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <Label For="logo" HelpText="Upload an image for the slide">Image: </Label>
+            </td>
+            <td>
+                <FileManager FileId="@_source" Filter="@Constants.ImageFiles" @ref="_slidefilemanager" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="control-label">Alt: </label>
+            </td>
+            <td>
+                <input id="_alt" class="form-control" @bind="@_alt" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="control-label">Caption: </label>
+            </td>
+            <td>
+                <input id="_caption" class="form-control" @bind="@_caption" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="control-label">Header: </label>
+            </td>
+            <td>
+                <input id="_header" class="form-control" @bind="@_header" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="control-label">Action Link: </label>
+            </td>
+            <td>
+                <input id="_actionLink" class="form-control" @bind="@_actionLink" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="control-label">Action Link Target: </label>
+            </td>
+            <td>
+                <select id="required" class="form-control" @bind="@_actionLinkTarget">
+                    <option value="">Self</option>
+                    <option value="_blank">New Window</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="control-label">Enabled: </label>
+            </td>
+            <td>
+                <input type="checkbox" id="_enabled" class="form-control" @bind="@_enabled" />
+            </td>
+        </tr>
+    </table>
+<button type="button" class="btn btn-success" @onclick="Save">Save</button>
+<NavLink class="btn btn-secondary" href="@NavigateUrl()">Cancel</NavLink>
+<br />
+<br />
+@if (PageState.Action == "Edit")
+{
+    <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon"></AuditInfo>
+}
+
+@code {
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+
+    public override string Actions => "Add,Edit";
+
+    public override List<Resource> Resources => new List<Resource>()
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = ModulePath() + "Module.css" }
+    };
+
+    int _id;
+    int _ModuleId;
+    string _name;
+    string _alt;
+    string _caption;
+    string _header;
+    string _actionLink;
+    string _actionLinkTarget;
+    bool _enabled;
+    int _source = -1;
+    private FileManager _slidefilemanager;
+    string _createdby;
+    DateTime _createdon;
+    string _modifiedby;
+    DateTime _modifiedon;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (PageState.Action == "Edit")
+            {
+                _id = Int32.Parse(PageState.QueryString["id"]);
+                _ModuleId = Int32.Parse(PageState.QueryString["moduleid"]);
+                Slider Slider = await SliderService.GetSliderAsync(_id,_ModuleId);
+                if (Slider != null)
+                {
+                    _name = Slider.Name;
+                    _alt = Slider.Alt;
+                    _source = Slider.Source;
+                    _caption = Slider.Caption;
+                    _header = Slider.Header;
+                    _actionLink = Slider.ActionLink;
+                    _actionLinkTarget = Slider.ActionLinkTarget;
+                    _enabled = Slider.Enabled;
+                    _createdby = Slider.CreatedBy;
+                    _createdon = Slider.CreatedOn;
+                    _modifiedby = Slider.ModifiedBy;
+                    _modifiedon = Slider.ModifiedOn;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Slider {SliderId} {Error}", _id, ex.Message);
+            AddModuleMessage("Error Loading Slider", MessageType.Error);
+        }
+    }
+
+    private async Task Save()
+    {
+        try
+        {
+            if (PageState.Action == "Add")
+            {
+                _source=_slidefilemanager.GetFileId();
+                Slider Slider = new Slider();
+                Slider.ModuleId = ModuleState.ModuleId;
+                Slider.Name = _name;
+                Slider.Source = _source;
+                Slider.Alt= _alt;
+                Slider.Caption= _caption;
+                Slider.Header= _header;
+                Slider.ActionLink= _actionLink;
+                Slider.ActionLinkTarget= _actionLinkTarget;
+                Slider.Enabled = _enabled;
+                Slider = await SliderService.AddSliderAsync(Slider,Slider.ModuleId);
+                await logger.LogInformation("Slider Added {Slider}", Slider);
+            }
+            else
+            {
+                Slider Slider = await SliderService.GetSliderAsync(_id,_ModuleId);
+                _source = _slidefilemanager.GetFileId();
+                Slider.Name = _name;
+                Slider.Source = _source;
+                Slider.Alt = _alt;
+                Slider.Caption = _caption;
+                Slider.Header = _header;
+                Slider.ActionLink = _actionLink;
+                Slider.ActionLinkTarget = _actionLinkTarget;
+                Slider.Enabled = _enabled;
+                await SliderService.UpdateSliderAsync(Slider, _ModuleId);
+                await logger.LogInformation("Slider Updated {Slider}", Slider);
+            }
+            NavigationManager.NavigateTo(NavigateUrl());
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Slider {Error}", ex.Message);
+            AddModuleMessage("Error Saving Slider", MessageType.Error);
+        }
+    }
+}

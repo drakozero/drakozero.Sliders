@@ -1,0 +1,78 @@
+@namespace drakozero.Sliders
+@inherits ModuleBase
+@inject ISettingService SettingService
+
+    <table class="table table-borderless">
+        <tr>
+            <td>
+                <label for="Fade" class="control-label">Fade or Slide: </label>
+            </td>
+            <td>
+                <select id="required" class="form-control" @bind="@_fade">
+                    <option value="True">Fade Slides</option>
+                    <option value="False">Slide</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="HasControls" class="control-label">Has Controls: </label>
+            </td>
+            <td>
+                <select id="required" class="form-control" @bind="@_hasControls">
+                    <option value="True">With Controls</option>
+                    <option value="False">Without Controls</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="HasIndicators" class="control-label">Has Indicators: </label>
+            </td>
+            <td>
+                <select id="required" class="form-control" @bind="@_hasIndicators">
+                    <option value="True">With Indicators</option>
+                    <option value="False">Without Indicators</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+@code {
+    public override string Title => "Slider Settings";
+
+    string _fade;
+    string _hasControls;
+    string _hasIndicators;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Dictionary<string, string> settings = await SettingService.GetModuleSettingsAsync(ModuleState.ModuleId);
+            _fade = SettingService.GetSetting(settings, "Fade", "");
+            _hasControls = SettingService.GetSetting(settings, "HasControls", "");
+            _hasIndicators = SettingService.GetSetting(settings, "HasIndicators", "");
+        }
+        catch (Exception ex)
+        {
+            ModuleInstance.AddModuleMessage(ex.Message, MessageType.Error);
+        }
+    }
+
+    public async Task UpdateSettings()
+    {
+        try
+        {
+            Dictionary<string, string> settings = await SettingService.GetModuleSettingsAsync(ModuleState.ModuleId);
+            SettingService.SetSetting(settings, "Fade", _fade);
+            SettingService.SetSetting(settings, "HasControls", _hasControls);
+            SettingService.SetSetting(settings, "HasIndicators", _hasIndicators);
+            await SettingService.UpdateModuleSettingsAsync(settings, ModuleState.ModuleId);
+        }
+        catch (Exception ex)
+        {
+            ModuleInstance.AddModuleMessage(ex.Message, MessageType.Error);
+        }
+    }
+}

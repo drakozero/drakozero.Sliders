@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Version>1.0.0</Version>
+    <Product>drakozero.Sliders</Product>
+    <Authors>drakozero</Authors>
+    <Company>drakozero</Company>
+    <Description>Module for Oqtane to have an image Slider</Description>
+    <Copyright>drakozero</Copyright>
+    <AssemblyName>drakozero.Sliders.Server.Oqtane</AssemblyName>
+    <Configurations>Debug;Release;IIS local;drakoabacus</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\drakozero.Sliders.1.0.0.sql" />
+    <EmbeddedResource Include="Scripts\drakozero.Sliders.Uninstall.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlazorStrap" Version="1.3.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\drakozero.Sliders.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Oqtane.Server" Version="1.0.1" />
+    <PackageReference Include="Oqtane.Shared" Version="1.0.1" />
+  </ItemGroup>
+</Project>

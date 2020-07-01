@@ -1,0 +1,161 @@
+@using drakozero.Sliders.Services
+@using drakozero.Sliders.Models
+
+
+@namespace drakozero.Sliders
+@inherits ModuleBase
+@inject ISliderService SliderService
+@inject NavigationManager NavigationManager
+@inject ISettingService SettingService
+
+@if (_Sliders == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+
+    <ActionLink Action="Add" Security="SecurityAccessLevel.Edit" Text="Add Slide" />
+                <br />
+                <br />
+    @if (@_Sliders.Count != 0)
+    {
+        @if (!PageState.EditMode)
+        {
+            <BSCarousel NumberOfItems="@_Sliders.Count" Fade="@_fade">
+            @if (_hasIndicators)
+            {
+                <BSCarouselIndicators NumberOfItems="@_Sliders.Count" />}
+                <div class="carousel-inner">
+                @foreach (var _slide in _Sliders)
+                {
+                    <BSCarouselItem src="@ContentUrl(int.Parse(_slide.Source))" alt="@_slide.Alt" ActionLink="@_slide.ActionLink" ActionLinkTarget="@_slide.ActionLinkTarget">
+                        <BSCarouselCaption CaptionText="@_slide.Caption" HeaderText="@_slide.Header" />
+                    </BSCarouselItem>
+    
+                }
+            </div>
+            @if (_hasControls)
+            {
+                <BSCarouselControl CarouselDirection="CarouselDirection.Previous" NumberOfItems="@_Sliders.Count" />
+                <BSCarouselControl CarouselDirection="CarouselDirection.Next" NumberOfItems="@_Sliders.Count" />
+            }
+            </BSCarousel>
+        }
+        else
+        {
+            <Pager Items="@_SlidersServer" Format="Grid">
+            <Header>
+                <div class="col"><strong>Sliders</strong></div>
+            </Header>
+            <Row>
+                <div class="col">
+                    <ActionLink Action="Edit" Parameters="@($"id=" + context.SliderId.ToString()+"&moduleid=" + context.ModuleId.ToString())" />
+                    <ActionDialog Header="Delete Slider" Message="@("Are You Sure You Wish To Delete The " + context.Name + " Slider?")" Action="Delete" Security="SecurityAccessLevel.Edit" Class="btn btn-danger" OnClick="@(async () => await Delete(context))" />
+                    @context.Name: @context.Header
+                </div>
+            </Row>
+            </Pager>
+        } 
+    }
+    else
+    {
+        <p>No Slides To Display</p>
+    }
+}
+
+@code { public override List<Resource> Resources => new List<Resource>()
+                            {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = ModulePath() + "Module.css" }
+    };
+
+    List<Slider> _SlidersServer;
+    List<SlideItem> _Sliders;
+    bool _fade;
+    bool _hasControls;
+    bool _hasIndicators;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Console.WriteLine("Cargando...");
+            await logger.LogInformation("Slider: Cargando");
+            Dictionary<string, string> settings = await SettingService.GetModuleSettingsAsync(ModuleState.ModuleId);
+            var result = bool.TryParse(SettingService.GetSetting(settings, "Fade", ""), out _fade);
+            result = bool.TryParse(SettingService.GetSetting(settings, "HasControls", ""), out _hasControls); ;
+            result = bool.TryParse(SettingService.GetSetting(settings, "HasIndicators", ""), out _hasIndicators); ;
+            _SlidersServer = await SliderService.GetSlidersAsync(ModuleState.ModuleId);
+            _Sliders = new List<SlideItem>();
+            foreach (Slider _sli in _SlidersServer)
+            {
+                if (_sli.Enabled)
+                {
+                    _Sliders.Add(new SlideItem(_sli));
+                }
+            }
+            Console.WriteLine("Encontrados: " + _SlidersServer.Count + " slides");
+            Console.WriteLine("Encontrados: " + _Sliders.Count + " slides habilitados");
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Slider {Error}", ex.Message);
+            AddModuleMessage("Error Loading Slider", MessageType.Error);
+        }
+    }
+
+    private async Task Delete(Slider Slider)
+    {
+        try
+        {
+            await SliderService.DeleteSliderAsync(Slider.SliderId, Slider.ModuleId);
+            await logger.LogInformation("Slider Deleted {Slider}", Slider);
+            _SlidersServer = await SliderService.GetSlidersAsync(ModuleState.ModuleId);
+            _Sliders = new List<SlideItem>();
+            foreach (Slider _sli in _SlidersServer)
+            {
+                if (_sli.Enabled)
+                {
+                    _Sliders.Add(new SlideItem(_sli));
+                }
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Slider {Slider} {Error}", Slider, ex.Message);
+            AddModuleMessage("Error Deleting Slider", MessageType.Error);
+        }
+    }
+    class SlideItem
+
+    {
+
+        public string Source { get; set; }
+
+        public string Alt { get; set; }
+
+        public string Caption { get; set; }
+
+        public string Header { get; set; }
+
+        public string ActionLink { get; set; }
+
+        public string ActionLinkTarget { get; set; }
+
+        public SlideItem(Slider _slider)
+        {
+            Source = _slider.Source.ToString();
+            Alt = _slider.Alt;
+            Caption = _slider.Caption;
+            Header = _slider.Header;
+            ActionLink = _slider.ActionLink;
+            ActionLinkTarget = _slider.ActionLinkTarget;
+
+        }
+
+    }
+
+    }

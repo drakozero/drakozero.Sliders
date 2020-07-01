@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+    <Configurations>Debug;Release;IIS local;drakoabacus</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlazorStrap" Version="1.3.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Client\drakozero.Sliders.Client.csproj" />
+    <ProjectReference Include="..\Server\drakozero.Sliders.Server.csproj" />
+    <ProjectReference Include="..\Shared\drakozero.Sliders.Shared.csproj" />
+  </ItemGroup>
+
+  <Target Name="CopyProjectReferencesToPackage">
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)\BlazorStrap.dll" />
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="IF $(ConfigurationName) == Debug (debug.cmd)" />
+    <Exec Command="IF $(ConfigurationName) == Release (release.cmd)" />
+    <Exec Command="IF $(ConfigurationName) == drakoabacus (local.cmd)" />
+  </Target>
+
+</Project>
