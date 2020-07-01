@@ -23,17 +23,12 @@ namespace drakozero.Sliders.Services
         public async Task<List<Slider>> GetSlidersAsync(int ModuleId)
         {
             List<Slider> Sliders = await GetJsonAsync<List<Slider>>($"{Apiurl}?moduleid={ModuleId}&entityid={ModuleId}");
-            int a = 0;
-            a += 1;
             return Sliders.OrderBy(item => item.Name).ToList();
         }
 
         public async Task<Slider> GetSliderAsync(int SliderId, int ModuleId)
         {
-            var salida= await GetJsonAsync<Slider>($"{Apiurl}/{SliderId}?entityid={ModuleId}");
-            int a = 0;
-            a += 1;
-            return salida;
+            return await GetJsonAsync<Slider>($"{Apiurl}/{SliderId}?entityid={ModuleId}"); ;
         }
 
         public async Task<Slider> AddSliderAsync(Slider Slider, int ModuleId)
