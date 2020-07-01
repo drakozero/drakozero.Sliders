@@ -1,10 +1,14 @@
 # Slider
 
 This is a proof of concept of an Oqtane module that uses a Third party Library.
-Octane Framework: [Oqtane GitHub]
-Octane Website: [Oqtane]
-Library used: [BlazorStrap.io] 
-Repo: [BlazorStrap GitHub]
+
+-Octane Framework: [Oqtane GitHub]
+
+-Octane Website: [Oqtane]
+
+-Library used: [BlazorStrap.io] 
+
+-Repo: [BlazorStrap GitHub]
 
 To add a third Party Nuget Package, the dll's of the package must be included in the module, within the .nupkg
 Added BlazorStrap *.dll* files to the .nuspec in the **Package** project inside the *<files>* section:
