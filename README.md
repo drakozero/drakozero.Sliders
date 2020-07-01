@@ -1,6 +1,8 @@
 # Slider
 
 This is a proof of concept of an Oqtane module that uses a Third party Library.
+Octane Framework: [Oqtane GitHub]
+Octane Website: [Oqtane]
 Library used: [BlazorStrap.io] 
 Repo: [BlazorStrap GitHub]
 
